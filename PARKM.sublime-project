@@ -1,0 +1,15 @@
+{
+	"folders":
+	[
+		{
+			"path": "Reporter",
+			"folder_exclude_patterns": ["__pycache__"]
+
+		},
+		{
+			"path": "Gcards",
+			"folder_exclude_patterns": ["__pycache__"]
+
+		}
+	]
+}

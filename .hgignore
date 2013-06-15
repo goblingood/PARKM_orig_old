@@ -1,0 +1,5 @@
+syntax: regexp
+/__pycache__$
+^PARKM.sublime-workspace$
+\.exe$
+\.txt$
