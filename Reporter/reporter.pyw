@@ -1,7 +1,7 @@
 import tkinter as tk
 import mods.guimain as guimain
 
-# root = tk.Tk()
+
 app = guimain.Reporter()
 app.master.title('Отчёты')
 app.master.geometry('480x100+300+200')  # WxH+X+Y
