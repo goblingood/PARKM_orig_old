@@ -74,10 +74,10 @@ class Reporter(tk.Frame):
 
     def create_report(self):
         self.B_create_report.config(state=tk.DISABLED)
-        self.B_create_report.update_idletasks()
+        self.update_idletasks()
         reports.reports(self.C_company_list.get(), self.L_path_label.cget('text'), self.C_company_list.cget('values'), self.L_status,
                         self.DE_date_from.getdate(), self.DE_date_to.getdate())
-        self.B_create_report.update()
+        self.update()
         self.B_create_report.config(state=tk.NORMAL)
 
 
