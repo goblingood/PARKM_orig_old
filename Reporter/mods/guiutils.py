@@ -20,16 +20,12 @@ import datetime
 
 
 class Dateentry(tk.Frame):
-
     def __init__(self, master=None, d=datetime.date.today()):
         tk.Frame.__init__(self, master)
-
         self.pack()
-
         dd = tk.StringVar(value=d.strftime("%d"))
         mm = tk.StringVar(value=d.strftime("%m"))
         yyyy = tk.StringVar(value=d.strftime("%Y"))
-
         self.E_1 = tk.Entry(self, width=2, textvariable=dd)
         self.L_1 = tk.Label(self, text='-')
         self.E_2 = tk.Entry(self, width=2, textvariable=mm)
@@ -39,7 +35,6 @@ class Dateentry(tk.Frame):
         self.E_1.bind('<Return>', func=lambda e: self.E_2.focus_set())
         self.E_2.bind('<Return>', func=lambda e: self.E_3.focus_set())
         self.E_3.bind('<Return>', func=self.getdate())
-
         self.E_1.grid(row=0, column=0)
         self.L_1.grid(row=0, column=1)
         self.E_2.grid(row=0, column=2)

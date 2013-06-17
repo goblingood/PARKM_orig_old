@@ -19,7 +19,6 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import filedialog
 import datetime
-
 try:
     import mods.reports as reports
     import mods.guiutils as guiutils
@@ -29,56 +28,42 @@ except:
 
 
 class Reporter(tk.Frame):
-
     def __init__(self, master=None):
         tk.Frame.__init__(self, master)
-
         self.pack()
-
-        # self.B_create_report = tk.Button(self, width=15, text='Выгрузить в Excel',
-        #                                  command=lambda: reports.reports(self.C_company_list.get(), self.L_path_label.cget('text'),
-        #                                                                  self.C_company_list.cget('values'), self.L_status,
-        #                                                                  self.DE_date_from.getdate(), self.DE_date_to.getdate()))
-        self.B_create_report = tk.Button(self, width=15, text='Выгрузить в Excel', command=self.create_report)
-        self.B_create_report.grid(row=0, column=0, padx=5, pady=5)
-
-        self.B_change_dir = tk.Button(self, width=15, text='Сменить каталог', command=self.select_dir)
-        self.B_change_dir.grid(row=1, column=0, padx=5, pady=5)
-
-        self.C_company_list = ttk.Combobox(self, width=35, values=['Все компании'] + reports.get_companies_list(), state='readonly')
-        self.C_company_list.set('Все компании')
-        self.C_company_list.grid(row=0, column=1)
-
-        self.L_path_label = tk.Label(self, text='C:/Reports/')
-        self.L_path_label.grid(row=1, column=1, sticky='W')
-
-        self.L_status = tk.Label(self, text='Status...')
-        self.L_status.grid(row=2, column=0, padx=5, columnspan=2, sticky='W')
-
-        self.L_date_from = tk.Label(self, text='С: ')
-        self.L_date_from.grid(row=0, column=2)
-
-        self.L_date_to = tk.Label(self, text='По:')
-        self.DE_date_from = guiutils.Dateentry(self, datetime.date(day=1, month=datetime.date.today().month,
-                                                                   year=datetime.date.today().year))
-        self.DE_date_from.grid(row=0, column=3)
-
-        self.L_date_to.grid(row=1, column=2)
-        self.DE_date_to = guiutils.Dateentry(self)
-        self.DE_date_to.grid(row=1, column=3)
+        self.btn_report = tk.Button(self, width=15, text='Выгрузить в Excel', command=self.create_report)
+        self.btn_report.grid(row=0, column=0, padx=5, pady=5)
+        self.btn_chdir = tk.Button(self, width=15, text='Сменить каталог', command=self.select_dir)
+        self.btn_chdir.grid(row=1, column=0, padx=5, pady=5)
+        self.cbx_companies = ttk.Combobox(self, width=35, values=['Все компании'] + reports.get_companies_list(), state='readonly')
+        self.cbx_companies.set('Все компании')
+        self.cbx_companies.grid(row=0, column=1)
+        self.lbl_path = tk.Label(self, text='C:/Reports/')
+        self.lbl_path.grid(row=1, column=1, sticky='W')
+        self.lbl_status = tk.Label(self, text='Status...')
+        self.lbl_status.grid(row=2, column=0, padx=5, columnspan=2, sticky='W')
+        self.lbl_dt_from = tk.Label(self, text='С: ')
+        self.lbl_dt_from.grid(row=0, column=2)
+        self.lbl_dt_to = tk.Label(self, text='По:')
+        self.de_dt_from = guiutils.Dateentry(self, datetime.date(day=1, month=datetime.date.today().month,
+                                                                 year=datetime.date.today().year))
+        self.de_dt_from.grid(row=0, column=3)
+        self.lbl_dt_to.grid(row=1, column=2)
+        self.de_dt_to = guiutils.Dateentry(self)
+        self.de_dt_to.grid(row=1, column=3)
 
     def select_dir(self):
         path = filedialog.askdirectory()
         if path != '':
-            self.L_path_label.configure(text=path + '/')
+            self.lbl_path.configure(text=path + '/')
 
     def create_report(self):
-        self.B_create_report.config(state=tk.DISABLED)
+        self.btn_report.config(state=tk.DISABLED)
         self.update_idletasks()
-        reports.reports(self.C_company_list.get(), self.L_path_label.cget('text'), self.C_company_list.cget('values'), self.L_status,
-                        self.DE_date_from.getdate(), self.DE_date_to.getdate())
+        reports.reports(self.cbx_companies.get(), self.lbl_path.cget('text'), self.cbx_companies.cget('values'), self.lbl_status,
+                        self.de_dt_from.getdate(), self.de_dt_to.getdate())
         self.update()
-        self.B_create_report.config(state=tk.NORMAL)
+        self.btn_report.config(state=tk.NORMAL)
 
 
 if __name__ == "__main__":

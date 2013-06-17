@@ -43,9 +43,7 @@ def get_gcards_list(company):
     gcards_list = []
 
     conn = pyodbc.connect('DRIVER={SQL Server};SERVER=localhost;DATABASE=parktime35;UID=sa;PWD=123')
-
     c = conn.cursor()
-
     if company == 'Непривязанные':
         sql = '''SELECT CR.ID FROM Cards AS CR
                  WHERE CR.CompanyID = -1 AND CR.CustomerID = -1
@@ -58,25 +56,20 @@ def get_gcards_list(company):
                  WHERE CM.Name=?
                  ORDER BY CR.ID'''
         c.execute(sql, company)
-
     gcards_list = [tohex(row.ID) for row in c]
-
     c.close()
     return gcards_list
 
 
 def register_gcards(gcards, cur, new):
-
     if cur == new:
         return
-
     if gcards == []:  # need optimize
         return
 
     conn = pyodbc.connect('DRIVER={SQL Server};SERVER=localhost;DATABASE=gcards;UID=sa;PWD=123')
     c = conn.cursor()
     sconn = sqlite3.connect('mods\gcards.db')
-
     sql = '''SELECT ID FROM parktime35.dbo.Companies AS CM WHERE CM.Name = ?'''
     c.execute(sql, new)
     newID = c.fetchone()

@@ -17,7 +17,7 @@
 
 import datetime
 # import sqlite3
-import math
+# import math
 
 
 def gen_date_list(base, numdays):
