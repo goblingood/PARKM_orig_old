@@ -62,9 +62,7 @@ def get_gcards_list(company):
 
 
 def register_gcards(gcards, cur, new):
-    if cur == new:
-        return
-    if gcards == []:  # need optimize
+    if cur == new or not gcards:
         return
 
     conn = pyodbc.connect('DRIVER={SQL Server};SERVER=localhost;DATABASE=gcards;UID=sa;PWD=123')
