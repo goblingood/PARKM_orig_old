@@ -81,17 +81,31 @@ def reports_company(company, report_path, rd_start, rd_end):
 
     rep_data = [[company], [], ['Компания', 'Сотрудник', 'Номер карты', 'Тариф', 'Время въезда', 'Время выезда', 'Длительность', 'Стоимость']]
 
-    row_count = 0
-    for row in c:
-        t = list(row)
-        t.append(row.TimeExit - row.TimeEntry)
-        t.append(ba.bill_daily_list(datetime.datetime.strftime(row.TimeEntry, date_frm),
-                 datetime.datetime.strftime(row.TimeExit, date_frm), daily_tariffs[row.Tariff]))
-        rep_data.append(t)
-        row_count += 1
+    # NOT OPTIMIZE VERSION:
+    # row_count = 0
+    # for row in c:
+    #     t = list(row)
+    #     t.append(row.TimeExit - row.TimeEntry)
+    #     t.append(ba.bill_daily_list(datetime.datetime.strftime(row.TimeEntry, date_frm),
+    #              datetime.datetime.strftime(row.TimeExit, date_frm), daily_tariffs[row.Tariff]))
+    #     rep_data.append(t)
+    #     row_count += 1
+
+    # OPTIMIZE VERSION:
+    t = [list(row) + [row.TimeExit - row.TimeEntry] + [ba.bill_daily_list(datetime.datetime.strftime(row.TimeEntry, date_frm),
+         datetime.datetime.strftime(row.TimeExit, date_frm), daily_tariffs[row.Tariff])] for row in c]
+    # rep_data += t
+    rep_data.extend(t)
 
     c.close()
 
-    rep_data.append(['', '', '', '', '', '', '=SUM(G4:G' + str(row_count + 3) + ')', '=SUM(H4:H' + str(row_count + 3) + ')'])
+    # if row_count > 0:  # empty data for companies doesn't require sums
+    #     rep_data.append(['', '', '', '', '', '', '=SUM(G4:G' + str(row_count + 3) + ')', '=SUM(H4:H' + str(row_count + 3) + ')'])
+    # else:
+    #     rep_data.append(['', '', '', '', '', '', '=SUM(G3:G3)', '=SUM(H3:H3)'])
+    if len(rep_data) > 3:  # empty data for companies doesn't require sums
+        rep_data.append(['', '', '', '', '', '', '=SUM(G4:G' + str(len(rep_data)) + ')', '=SUM(H4:H' + str(len(rep_data)) + ')'])
+    else:
+        rep_data.append(['', '', '', '', '', '', '=SUM(G3:G3)', '=SUM(H3:H3)'])
     print(rep_data)
     sx.save_company_xlsx(report_path + company, rep_data)

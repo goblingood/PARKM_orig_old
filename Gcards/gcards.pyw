@@ -63,9 +63,11 @@ class Gcards(tk.Frame):
 
     def register_gcards(self):
         self.B_gcards_link.config(state=tk.DISABLED)
+        self.B_gcards_link.update_idletasks()  # ??
         gcards = [self.LB_cards.get(int(i)) for i in self.LB_cards.curselection()]
         sq.register_gcards(gcards, self.C_company_list_cur.get(), self.C_company_list_new.get())
         self.fill_gcards_listbox()
+        self.B_gcards_link.update()  # ??
         self.B_gcards_link.config(state=tk.NORMAL)
 
 

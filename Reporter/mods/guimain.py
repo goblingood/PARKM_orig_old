@@ -35,10 +35,11 @@ class Reporter(tk.Frame):
 
         self.pack()
 
-        self.B_create_report = tk.Button(self, width=15, text='Выгрузить в Excel',
-                                         command=lambda: reports.reports(self.C_company_list.get(), self.L_path_label.cget('text'),
-                                                                         self.C_company_list.cget('values'), self.L_status,
-                                                                         self.DE_date_from.getdate(), self.DE_date_to.getdate()))
+        # self.B_create_report = tk.Button(self, width=15, text='Выгрузить в Excel',
+        #                                  command=lambda: reports.reports(self.C_company_list.get(), self.L_path_label.cget('text'),
+        #                                                                  self.C_company_list.cget('values'), self.L_status,
+        #                                                                  self.DE_date_from.getdate(), self.DE_date_to.getdate()))
+        self.B_create_report = tk.Button(self, width=15, text='Выгрузить в Excel', command=self.create_report)
         self.B_create_report.grid(row=0, column=0, padx=5, pady=5)
 
         self.B_change_dir = tk.Button(self, width=15, text='Сменить каталог', command=self.select_dir)
@@ -70,6 +71,14 @@ class Reporter(tk.Frame):
         path = filedialog.askdirectory()
         if path != '':
             self.L_path_label.configure(text=path + '/')
+
+    def create_report(self):
+        self.B_create_report.config(state=tk.DISABLED)
+        self.B_create_report.update_idletasks()
+        reports.reports(self.C_company_list.get(), self.L_path_label.cget('text'), self.C_company_list.cget('values'), self.L_status,
+                        self.DE_date_from.getdate(), self.DE_date_to.getdate())
+        self.B_create_report.update()
+        self.B_create_report.config(state=tk.NORMAL)
 
 
 if __name__ == "__main__":

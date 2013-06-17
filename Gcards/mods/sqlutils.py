@@ -70,6 +70,9 @@ def register_gcards(gcards, cur, new):
     if cur == new:
         return
 
+    if gcards == []:  # need optimize
+        return
+
     conn = pyodbc.connect('DRIVER={SQL Server};SERVER=localhost;DATABASE=gcards;UID=sa;PWD=123')
     c = conn.cursor()
     sconn = sqlite3.connect('mods\gcards.db')
