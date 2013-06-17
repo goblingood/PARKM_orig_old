@@ -2,12 +2,12 @@
 	"folders":
 	[
 		{
-			"path": "Reporter",
+			"path": "REPORTER",
 			"folder_exclude_patterns": ["__pycache__"]
 
 		},
 		{
-			"path": "Gcards",
+			"path": "GCARDS",
 			"folder_exclude_patterns": ["__pycache__"]
 
 		}
