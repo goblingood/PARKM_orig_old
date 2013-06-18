@@ -70,7 +70,7 @@ def register_gcards(gcards, cur, new):
 
     nx = False
     try:
-        with open('mods\gcards.db'):
+        with open('mods\gcards.db'):  # can without 'with'
             pass
     except IOError:
         nx = True
@@ -146,6 +146,6 @@ GO
 ##############################################################################
 #SQLITE#
 
-CREATE TABLE gcards (CardID INTEGER PRIMARY KEY, CompanyID INTEGER NOT NULL, Rec
-ordDate INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP)
+CREATE TABLE gcards (CardID INTEGER PRIMARY KEY, CompanyID INTEGER NOT NULL,
+                     RecordDate INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP)
 '''
