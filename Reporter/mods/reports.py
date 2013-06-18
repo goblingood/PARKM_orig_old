@@ -26,7 +26,11 @@ except:
 
 
 def get_companies_list():
-    conn = pyodbc.connect('DRIVER={SQL Server};SERVER=localhost;DATABASE=parktime35;UID=sa;PWD=123')
+    try:
+        conn = pyodbc.connect('DRIVER={SQL Server};SERVER=localhost;DATABASE=parktime35;UID=sa;PWD=123')
+    except pyodbc.Error as e:
+        print(e)
+        exit()
     c = conn.cursor()
     c.execute('''SELECT CM.Name FROM Companies AS CM ORDER BY CM.Name''')
     companies_list = [row.Name for row in c]

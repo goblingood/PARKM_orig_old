@@ -68,16 +68,12 @@ def register_gcards(gcards, cur, new):
     conn = pyodbc.connect('DRIVER={SQL Server};SERVER=localhost;DATABASE=gcards;UID=sa;PWD=123')
     c = conn.cursor()
 
-    nx = False
     try:
         with open('mods\gcards.db'):  # can without 'with'
-            pass
+        sconn = sqlite3.connect('mods\gcards.db')
     except IOError:
-        nx = True
-
-    sconn = sqlite3.connect('mods\gcards.db')
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    if nx:
+        # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        sconn = sqlite3.connect('mods\gcards.db')
         sql = '''CREATE TABLE IF NOT EXISTS gcards (CardID INTEGER PRIMARY KEY, CompanyID INTEGER NOT NULL,
                                                 RecordDate INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP)'''
         sconn.execute(sql)
@@ -87,7 +83,8 @@ def register_gcards(gcards, cur, new):
         print(init_data)
         sql = ''' INSERT INTO gcards (CardID, CompanyID, RecordDate) VALUES(?, ?, ?)'''
         sconn.executemany(sql, init_data)
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
     sql = '''SELECT ID FROM parktime35.dbo.Companies AS CM WHERE CM.Name = ?'''
     c.execute(sql, new)
     newID = c.fetchone()
