@@ -92,3 +92,40 @@ def register_gcards(gcards, cur, new):
     c.close()
     sconn.commit()
     sconn.close()
+
+'''
+##############################################################################
+#MSSQL#
+
+USE [gcards]
+GO
+
+/****** Object:  Table [dbo].[gcards]    Script Date: 18.06.2013 19:16:55 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[gcards](
+    [ID] [int] IDENTITY(1,1) NOT NULL,
+    [CardID] [int] NOT NULL,
+    [CompanyID] [int] NOT NULL,
+    [RecordDate] [datetime] NOT NULL,
+ CONSTRAINT [PK_gcards] PRIMARY KEY CLUSTERED
+(
+    [ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+ALTER TABLE [dbo].[gcards] ADD  DEFAULT (getdate()) FOR [RecordDate]
+GO
+
+##############################################################################
+#SQLITE#
+
+CREATE TABLE gcards (CardID INTEGER PRIMARY KEY, CompanyID INTEGER NOT NULL, Rec
+ordDate INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP)
+'''
