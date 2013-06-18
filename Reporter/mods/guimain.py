@@ -45,10 +45,10 @@ class Reporter(tk.Frame):
         self.lbl_dt_from = tk.Label(self, text='С: ')
         self.lbl_dt_from.grid(row=0, column=2)
         self.lbl_dt_to = tk.Label(self, text='По:')
+        self.lbl_dt_to.grid(row=1, column=2)
         self.de_dt_from = guiutils.Dateentry(self, datetime.date(day=1, month=datetime.date.today().month,
                                                                  year=datetime.date.today().year))
         self.de_dt_from.grid(row=0, column=3)
-        self.lbl_dt_to.grid(row=1, column=2)
         self.de_dt_to = guiutils.Dateentry(self)
         self.de_dt_to.grid(row=1, column=3)
 
@@ -62,7 +62,7 @@ class Reporter(tk.Frame):
         self.update_idletasks()
         reports.reports(self.cbx_companies.get(), self.lbl_path.cget('text'), self.cbx_companies.cget('values'), self.lbl_status,
                         self.de_dt_from.getdate(), self.de_dt_to.getdate())
-        self.update()
+        self.update()  # some dirty hack
         self.btn_report.config(state=tk.NORMAL)
 
 
