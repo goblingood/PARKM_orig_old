@@ -48,8 +48,8 @@ class Gcards(tk.Frame):
         self.btn_link = tk.Button(self, width=15, text='Привязать', command=self.register_gcards)
         self.btn_link.grid(row=2, column=2, padx=5, pady=5)
 
-        # self.btn_purge = tk.Button(self, width=15, text='Привязать', command=self.register_gcards)
-        # self.btn_purge.grid(row=2, column=2, padx=5, pady=5)
+        self.btn_purge = tk.Button(self, width=5, text='Purge', command=self.purge_deleted)
+        self.btn_purge.grid(row=4, column=2, padx=5, pady=5)
 
         self.lbl_status = tk.Label(self, text='Status...')
         self.lbl_status.grid(row=3, column=0, padx=5, columnspan=2, sticky='W')
@@ -70,6 +70,9 @@ class Gcards(tk.Frame):
         self.fill_gcards_listbox()
         self.btn_link.update()  # ??
         self.btn_link.config(state=tk.NORMAL)
+
+    def purge_deleted(self):
+        sq.purge_deleted()
 
 
 if __name__ == "__main__":
