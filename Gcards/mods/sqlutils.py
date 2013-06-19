@@ -70,7 +70,7 @@ def register_gcards(gcards, cur, new):
 
     try:
         with open('mods\gcards.db'):  # can without 'with'
-        sconn = sqlite3.connect('mods\gcards.db')
+            sconn = sqlite3.connect('mods\gcards.db')
     except IOError:
         # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         sconn = sqlite3.connect('mods\gcards.db')
