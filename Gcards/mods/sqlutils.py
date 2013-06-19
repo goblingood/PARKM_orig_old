@@ -75,13 +75,13 @@ def register_gcards(gcards, cur, new):
         # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         sconn = sqlite3.connect('mods\gcards.db')
         sql = '''CREATE TABLE IF NOT EXISTS gcards (CardID INTEGER PRIMARY KEY, CompanyID INTEGER NOT NULL,
-                                                RecordDate INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP)'''
+                                                    RecordDate INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, Active INTEGER DEFAULT 1, Reserved INTEGER)'''
         sconn.execute(sql)
         sql = '''SELECT CardID, CompanyID, RecordDate FROM gcards'''
         init_data = c.execute(sql).fetchall()
 
         print(init_data)
-        sql = ''' INSERT INTO gcards (CardID, CompanyID, RecordDate) VALUES(?, ?, ?)'''
+        sql = ''' INSERT INTO gcards (CardID, CompanyID, RecordDate, Active) VALUES(?, ?, ?, ?)'''
         sconn.executemany(sql, init_data)
         # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -114,35 +114,19 @@ def register_gcards(gcards, cur, new):
 ##############################################################################
 #MSSQL#
 
-USE [gcards]
-GO
+CREATE TABLE gcards.dbo.gcards(
+    ID int IDENTITY(1,1) NOT NULL,
+    CardID int NOT NULL,
+    CompanyID int NOT NULL,
+    RecordDate datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    Active int NOT NULL DEFAULT 1,
+ CONSTRAINT PK_gcards PRIMARY KEY CLUSTERED (ID)
+)
 
-/****** Object:  Table [dbo].[gcards]    Script Date: 18.06.2013 19:16:55 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-CREATE TABLE [dbo].[gcards](
-    [ID] [int] IDENTITY(1,1) NOT NULL,
-    [CardID] [int] NOT NULL,
-    [CompanyID] [int] NOT NULL,
-    [RecordDate] [datetime] NOT NULL,
- CONSTRAINT [PK_gcards] PRIMARY KEY CLUSTERED
-(
-    [ID] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY]
-
-GO
-
-ALTER TABLE [dbo].[gcards] ADD  DEFAULT (getdate()) FOR [RecordDate]
-GO
 
 ##############################################################################
 #SQLITE#
 
 CREATE TABLE gcards (CardID INTEGER PRIMARY KEY, CompanyID INTEGER NOT NULL,
-                     RecordDate INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP)
+                     RecordDate INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, Active INTEGER DEFAULT 1, Reserved INTEGER)
 '''
