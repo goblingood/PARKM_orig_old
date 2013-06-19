@@ -56,6 +56,7 @@ class Gcards(tk.Frame):
 
         self.lbx_cards['yscrollcommand'] = self.scrl_cards.set
         self.fill_gcards_listbox()
+        sq.init_sqlitedb()
 
     def fill_gcards_listbox(self, event=None):
         self.lv.set(tuple(sq.get_gcards_list(self.cbx_curcompany.get())))
