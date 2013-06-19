@@ -52,7 +52,7 @@ class Gcards(tk.Frame):
         # self.btn_purge.grid(row=2, column=2, padx=5, pady=5)
 
         self.lbl_status = tk.Label(self, text='Status...')
-        self.lbl_status.grid(row=2, column=0, padx=5, columnspan=2, sticky='W')
+        self.lbl_status.grid(row=3, column=0, padx=5, columnspan=2, sticky='W')
 
         self.lbx_cards['yscrollcommand'] = self.scrl_cards.set
         self.fill_gcards_listbox()
