@@ -118,6 +118,6 @@ def reports_company(company, report_path, rd_start, rd_end):
     else:
         rep_data.append(['', '', '', '', '', '', '=SUM(G3:G3)', '=SUM(H3:H3)'])
     # DEBUG START
-    # print(rep_data)
+    print(rep_data)
     # DEBUG END
     sx.save_company_xlsx(report_path + company, rep_data)

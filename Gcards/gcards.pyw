@@ -67,7 +67,7 @@ class Gcards(tk.Frame):
 
     def register_gcards(self):
         self.btn_link.config(state=tk.DISABLED)
-        self.btn_link.update_idletasks()  # ??
+        self.btn_link.update()  # ??
         gcards = [self.lbx_cards.get(i) for i in self.lbx_cards.curselection()]
         # gcards = [self.lbx_cards.get(int(i)) for i in self.lbx_cards.curselection()]  # use for old Tkinter bug
         sq.register_gcards(gcards, self.cbx_curcompany.get(), self.cbx_newcompany.get())

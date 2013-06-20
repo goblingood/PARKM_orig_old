@@ -59,11 +59,13 @@ class Reporter(tk.Frame):
 
     def create_report(self):
         self.btn_report.config(state=tk.DISABLED)
-        self.update_idletasks()
+        self.lbl_status.config(text='Wait...')
+        self.update()
         reports.reports(self.cbx_companies.get(), self.lbl_path.cget('text'), self.cbx_companies.cget('values'), self.lbl_status,
                         self.de_dt_from.getdate(), self.de_dt_to.getdate())
         self.update()  # some dirty hack
         self.btn_report.config(state=tk.NORMAL)
+        self.lbl_status.config(text='Status...')
 
 
 if __name__ == "__main__":
