@@ -119,21 +119,39 @@ def init_sqlitedb(dbpath='mods\gcards.db'):
         sconn.close()
 
 
-def purge_deleted():
+def purge_deleted(isdel):
     conn = pyodbc.connect('DRIVER={SQL Server};SERVER=localhost;DATABASE=gcards;UID=sa;PWD=123')
     c = conn.cursor()
-    # ca simple delete but keep history
-    # sql = """DELETE FROM gcards WHERE CardID NOT IN (SELECT CR.ID FROM parktime35.dbo.Cards AS CR
-    #                                                  WHERE CR.CompanyID = -1 AND CR.CustomerID = -1)"""
-    sql = """UPDATE gcards SET Active = 0 WHERE CardID NOT IN (SELECT CR.ID FROM parktime35.dbo.Cards AS CR
-                                                               WHERE CR.CompanyID = -1 AND CR.CustomerID = -1)"""
-    c.execute(sql)
-    # try:
-    os.rename('mods\gcards.db', 'mods\gcards_' + datetime.datetime.strftime(datetime.datetime.now(), '%d-%m-%Y %H.%M.%S') + '.db')
-    init_sqlitedb()
-    # except:
-    #     print(E)
-    #     exit()
+
+    if isdel:
+        # ca simple delete but keep history
+        # sql = """DELETE FROM gcards WHERE CardID NOT IN (SELECT CR.ID FROM parktime35.dbo.Cards AS CR
+        #                                                  WHERE CR.CompanyID = -1 AND CR.CustomerID = -1)"""
+        sql = """UPDATE gcards SET Active = 0 WHERE CardID NOT IN (SELECT CR.ID FROM parktime35.dbo.Cards AS CR
+                                                                   WHERE CR.CompanyID = -1 AND CR.CustomerID = -1)"""
+        c.execute(sql)
+        # try:
+        os.rename('mods\gcards.db', 'mods\gcards_' + datetime.datetime.strftime(datetime.datetime.now(), '%d-%m-%Y %H.%M.%S') + '.db')
+        init_sqlitedb()
+        # except:
+        #     print(E)
+        #     exit()
+    else:
+        sconn = sqlite3.connect('mods\gcards.db')
+        sql = """SELECT CR.ID FROM parktime35.dbo.Cards AS CR WHERE CR.CompanyID = -1 AND CR.CustomerID = -1"""
+        c.execute(sql)
+        existing_gcards = [(row.ID,) for row in c]
+        print(existing_gcards)
+        # some hack
+        sql = """UPDATE gcards SET Active = 0 WHERE CardID <> ?"""
+        c.executemany(sql, existing_gcards)
+        sconn.executemany(sql, existing_gcards)
+        c.commit()
+        sconn.commit()
+        sconn.close()
+
+    c.close()
+
 
 """
 ##############################################################################

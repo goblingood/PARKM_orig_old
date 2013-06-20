@@ -30,6 +30,7 @@ class Gcards(tk.Frame):
         self.pack()
 
         self.lv = tk.StringVar()
+        self.isdel = tk.IntVar()
         self.lbx_cards = tk.Listbox(self, width=15, height=15, selectmode=tk.EXTENDED, exportselection=False, listvariable=self.lv)
         self.lbx_cards.grid(row=0, column=0, rowspan=2)
 
@@ -50,6 +51,9 @@ class Gcards(tk.Frame):
 
         self.btn_purge = tk.Button(self, width=5, text='Purge', command=self.purge_deleted)
         self.btn_purge.grid(row=4, column=2, padx=5, pady=5)
+
+        self.cb_purge_del = tk.Checkbutton(self, text="Удалить", variable=self.isdel)
+        self.cb_purge_del.grid(row=4, column=1, padx=5, columnspan=2, sticky='W')
 
         self.lbl_status = tk.Label(self, text='Status...')
         self.lbl_status.grid(row=3, column=0, padx=5, columnspan=2, sticky='W')
@@ -72,7 +76,8 @@ class Gcards(tk.Frame):
         self.btn_link.config(state=tk.NORMAL)
 
     def purge_deleted(self):
-        sq.purge_deleted()
+        print(self.isdel.get())
+        sq.purge_deleted(self.isdel.get())
 
 
 if __name__ == "__main__":
