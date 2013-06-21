@@ -58,22 +58,23 @@ def reports_company(company, report_path, rd_start, rd_end):
 
     conn = pyodbc.connect('DRIVER={SQL Server};SERVER=localhost;DATABASE=parktime35;UID=sa;PWD=123')
     c = conn.cursor()
-    sqll = """SELECT CM.Name,
-                 CS.Name,
-                 UPPER(SUBSTRING(MASTER.DBO.FN_VARBINTOHEXSTR(CR.ID), 3, 8)),
-                 TRF.Name AS Tariff,
-                 T.TimeEntry, T.TimeExit
-                 FROM Companies AS CM LEFT JOIN (
-                                                 Cards AS CR
-                                                 INNER JOIN Transactions AS T ON CR.ID = T.CardID
-                                                                              AND T.Type = 2 AND T.TimeEntry < T.TimeExit
-                                                                              AND T.TimeEntry > '2000-01-01'
-                                                                              AND T.TimeExit BETWEEN ? AND ?
-                                                 LEFT JOIN Tariffs AS TRF ON CR.TariffID = TRF.ID
-                                                 LEFT JOIN Customers AS CS ON CR.CustomerID = CS.ID
-                                                ) ON CM.ID = CR.CompanyID
-                 WHERE CR.ID IS NOT NULL AND CM.Name = ?  -- temporary block empty CR.ID
-                 ORDER BY T.TimeExit ASC"""
+    # SELECT WITHOUT GUESTS CARDS
+    # sqll = """SELECT CM.Name,
+    #              CS.Name,
+    #              UPPER(SUBSTRING(MASTER.DBO.FN_VARBINTOHEXSTR(CR.ID), 3, 8)),
+    #              TRF.Name AS Tariff,
+    #              T.TimeEntry, T.TimeExit
+    #              FROM Companies AS CM LEFT JOIN (
+    #                                              Cards AS CR
+    #                                              INNER JOIN Transactions AS T ON CR.ID = T.CardID
+    #                                                                           AND T.Type = 2 AND T.TimeEntry < T.TimeExit
+    #                                                                           AND T.TimeEntry > '2000-01-01'
+    #                                                                           AND T.TimeExit BETWEEN ? AND ?
+    #                                              LEFT JOIN Tariffs AS TRF ON CR.TariffID = TRF.ID
+    #                                              LEFT JOIN Customers AS CS ON CR.CustomerID = CS.ID
+    #                                             ) ON CM.ID = CR.CompanyID
+    #              WHERE CR.ID IS NOT NULL AND CM.Name = ?  -- temporary block empty CR.ID
+    #              ORDER BY T.TimeExit ASC"""
     sql = """SELECT CM.Name,
                  CS.Name,
                  UPPER(SUBSTRING(MASTER.DBO.FN_VARBINTOHEXSTR(CR.ID), 3, 8)),

@@ -58,6 +58,6 @@ def save_company_xlsx(file_name, data):
     ws.cell(row=len(data)-1, column=7).style.fill.start_color.index = Color.RED
 
     for i, width in enumerate(column_width):  # can be optimize [generator]
-        ws.column_dimensions[get_column_letter(i+1)].width = width + 2
+        ws.column_dimensions[get_column_letter(i+1)].width = width + 2  # 5 for best experience
 
     wb.save(file_name + '.xlsx')
