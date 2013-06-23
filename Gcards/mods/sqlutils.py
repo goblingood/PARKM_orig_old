@@ -97,6 +97,7 @@ def register_gcards(gcards, cur, new):
 
 
 def init_sqlitedb(dbpath='mods\gcards.db'):
+    # can use (SELECT count(*) FROM sqlite_master WHERE type='table' AND name='table_name')
     try:
         with open(dbpath):  # can without 'with'
             pass
@@ -124,7 +125,7 @@ def purge_deleted(isdel):
     c = conn.cursor()
 
     if isdel:
-        # ca simple delete but keep history
+        # can simple delete but keep history
         # sql = """DELETE FROM gcards WHERE CardID NOT IN (SELECT CR.ID FROM parktime35.dbo.Cards AS CR
         #                                                  WHERE CR.CompanyID = -1 AND CR.CustomerID = -1)"""
         sql = """UPDATE gcards SET Active = 0 WHERE CardID NOT IN (SELECT CR.ID FROM parktime35.dbo.Cards AS CR
@@ -142,7 +143,7 @@ def purge_deleted(isdel):
         c.execute(sql)
         existing_gcards = [(row.ID,) for row in c]
         print(existing_gcards)
-        # some hack
+        # some hack (cant use IN!)
         sql = """UPDATE gcards SET Active = 0 WHERE CardID <> ?"""
         c.executemany(sql, existing_gcards)
         sconn.executemany(sql, existing_gcards)
