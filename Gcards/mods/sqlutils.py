@@ -98,13 +98,32 @@ def register_gcards(gcards, cur, new):
 
 def init_sqlitedb(dbpath='mods\gcards.db'):
     # can use (SELECT count(*) FROM sqlite_master WHERE type='table' AND name='table_name')
-    try:
-        with open(dbpath):  # can without 'with'
-            pass
-    except IOError:
+    # try:
+    #     with open(dbpath):  # can without 'with'
+    #         pass
+    # except IOError:
+    #     conn = pyodbc.connect('DRIVER={SQL Server};SERVER=localhost;DATABASE=gcards;UID=sa;PWD=123')
+    #     c = conn.cursor()
+    #     sconn = sqlite3.connect(dbpath)
+    #     sql = """CREATE TABLE IF NOT EXISTS gcards (CardID INTEGER PRIMARY KEY, CompanyID INTEGER NOT NULL,
+    #                                                 RecordDate INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, Active INTEGER DEFAULT 1, Reserved INTEGER)"""
+    #     sconn.execute(sql)
+    #     sql = """SELECT CardID, CompanyID, RecordDate, Active FROM gcards"""
+    #     init_data = c.execute(sql).fetchall()
+
+    #     print(init_data)
+    #     sql = """INSERT INTO gcards (CardID, CompanyID, RecordDate, Active) VALUES(?, ?, ?, ?)"""
+    #     sconn.executemany(sql, init_data)
+
+    #     c.close()
+    #     sconn.commit()
+    #     sconn.close()
+    # improved I think:
+    sconn = sqlite3.connect(dbpath)
+    sql = """SELECT COUNT(*) AS CNT FROM sqlite_master WHERE type='table' AND name='gcards'"""
+    if sconn.execute(sql).fetchone()[0] == 0:
         conn = pyodbc.connect('DRIVER={SQL Server};SERVER=localhost;DATABASE=gcards;UID=sa;PWD=123')
         c = conn.cursor()
-        sconn = sqlite3.connect(dbpath)
         sql = """CREATE TABLE IF NOT EXISTS gcards (CardID INTEGER PRIMARY KEY, CompanyID INTEGER NOT NULL,
                                                     RecordDate INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, Active INTEGER DEFAULT 1, Reserved INTEGER)"""
         sconn.execute(sql)
@@ -162,7 +181,7 @@ CREATE TABLE gcards.dbo.gcards(
     ID int IDENTITY(1,1) NOT NULL,
     CardID int NOT NULL,
     CompanyID int NOT NULL,
-    RecordDate datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    RecordDate datetime NOT NULL DEFAULT SYSUTCDATETIME(),
     Active int NOT NULL DEFAULT 1,
  CONSTRAINT PK_gcards PRIMARY KEY CLUSTERED (ID)
 )
