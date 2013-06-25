@@ -181,7 +181,7 @@ CREATE TABLE gcards.dbo.gcards(
     ID int IDENTITY(1,1) NOT NULL,
     CardID int NOT NULL,
     CompanyID int NOT NULL,
-    RecordDate datetime NOT NULL DEFAULT SYSUTCDATETIME(),
+    RecordDate datetime NOT NULL DEFAULT GETUTCDATE(),
     Active int NOT NULL DEFAULT 1,
  CONSTRAINT PK_gcards PRIMARY KEY CLUSTERED (ID)
 )
@@ -191,5 +191,6 @@ CREATE TABLE gcards.dbo.gcards(
 #SQLITE#
 
 CREATE TABLE gcards (CardID INTEGER PRIMARY KEY, CompanyID INTEGER NOT NULL,
-                     RecordDate INTEGER NOT NULL DEFAULT CURRENT_TIMESTAMP, Active INTEGER DEFAULT 1, Reserved INTEGER)
+                     RecordDate TEXT NOT NULL DEFAULT (STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW')), Active INTEGER DEFAULT 1, Reserved INTEGER)
+
 """
