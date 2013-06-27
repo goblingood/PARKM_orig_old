@@ -82,7 +82,7 @@ class Gcards(tk.Frame):
 
 if __name__ == "__main__":
     app = Gcards()
-    app.master.title('Отчёты')
+    app.master.title('Разовые карты')
     app.master.geometry('380x300+300+200')  # WxH+X+Y
     try:
         app.master.wm_iconbitmap('mods\icon.ico')

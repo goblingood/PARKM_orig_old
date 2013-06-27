@@ -10,6 +10,11 @@
 			"path": "GCARDS",
 			"folder_exclude_patterns": ["__pycache__"]
 
+		},
+		{
+			"path": "ZCOUNTER",
+			"folder_exclude_patterns": ["__pycache__"]
+
 		}
 	]
 }

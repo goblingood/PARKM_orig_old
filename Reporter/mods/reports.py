@@ -89,7 +89,7 @@ def reports_company(company, report_path, rd_start, rd_end):
                                                  LEFT JOIN Tariffs AS TRF ON CR.TariffID = TRF.ID
                                                  LEFT JOIN Customers AS CS ON CR.CustomerID = CS.ID
                                                 ) ON CM.ID = CR.CompanyID
-                 WHERE CR.ID IS NOT NULL AND CM.Name = ?  -- temporary block empty CR.ID
+                 WHERE CR.ID IS NOT NULL AND CM.Name = ?  -- temporary block empty CR.ID ???NOT NEED???
             UNION
               SELECT CM.Name,
                  'Разовая карта',
@@ -103,7 +103,7 @@ def reports_company(company, report_path, rd_start, rd_end):
                                                                               AND T.TimeEntry > '2013-06-20'
                                                                               AND T.TimeExit BETWEEN ? AND ?
                                                 ) ON CM.ID = CR.CompanyID
-                 WHERE CR.CardID IS NOT NULL AND CM.Name = ?
+                 WHERE CR.CardID IS NOT NULL AND CM.Name = ?  -- ???NOT NEED???
             ORDER BY T.TimeExit ASC"""
     c.execute(sql, (rd_start, rd_end, company, rd_start, rd_end, company))
 
