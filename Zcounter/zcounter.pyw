@@ -32,8 +32,9 @@ class Zcounter(tk.Frame):
         self.tv_counter = ttk.Treeview(self, height=28)
         self.tv_counter.grid(row=0, column=0)
 
-        # self.scrl_counter = tk.Scrollbar(self, orient=tk.VERTICAL, command=self.tv_counter.yview)
-        # self.scrl_counter.grid(row=0, column=1, sticky=(tk.N, tk.S))
+        self.scrl_counter = tk.Scrollbar(self, orient=tk.VERTICAL, command=self.tv_counter.yview)
+        self.scrl_counter.grid(row=0, column=1, sticky=('N', 'S'))
+        self.tv_counter['yscrollcommand'] = self.scrl_counter.set
 
         self.tv_counter["columns"] = ("company", "current", 'total')
         self.tv_counter.column("company", anchor='w')
@@ -44,13 +45,31 @@ class Zcounter(tk.Frame):
         self.tv_counter.heading("total", text="Total")
 
         self.tv_counter['show'] = 'headings'  # supress!
+        self.prev_data = []
         self.init_tv_counter()
+        self.refresh_tv_counter()
 
     def init_tv_counter(self):
         counter_data = zu.query_count()
-        for i in counter_data:
-            print(i)
-            self.tv_counter.insert('', 'end', values=i)
+        for i, data in enumerate(counter_data):
+            counter_data = zu.query_count()
+            self.tv_counter.insert('', 'end', iid=i+1, values=data)
+        self.prev_data = counter_data
+
+    def refresh_tv_counter(self):
+        counter_data = zu.query_count()
+        for i, data in enumerate(counter_data):
+            self.tv_counter.delete(i+1)
+            if data[1] > self.prev_data[i][1]:
+                self.tv_counter.insert('', 'end', iid=i+1, values=data, tag=('up',))
+                self.tv_counter.tag_configure('up', background='red')
+            elif data[1] < self.prev_data[i][1]:
+                self.tv_counter.insert('', 'end', iid=i+1, values=data, tag=('down',))
+                self.tv_counter.tag_configure('down', background='green')
+            else:
+                self.tv_counter.insert('', 'end', iid=i+1, values=data)
+        # self.prev_data = counter_data
+        self.tv_counter.after(30000, self.refresh_tv_counter)
 
 
 if __name__ == "__main__":

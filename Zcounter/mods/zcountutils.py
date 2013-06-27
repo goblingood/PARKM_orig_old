@@ -23,8 +23,14 @@ import datetime
 def query_count():
     conn = pyodbc.connect('DRIVER={SQL Server};SERVER=localhost;DATABASE=parktime35;UID=sa;PWD=123')
     c = conn.cursor()
-    sql = """SELECT one.Name, CNT_PARK, CNT_FULL from (SELECT CM.Name, count(CR.ID) as CNT_PARK FROM Companies AS CM LEFT JOIN Cards AS CR ON CM.ID = CR.CompanyID AND ZoneID=1 GROUP BY CM.Name) as one inner join
-             (SELECT CM.Name, count(CR.ID) as CNT_FULL FROM Companies AS CM LEFT JOIN Cards AS CR ON CM.ID = CR.CompanyID GROUP BY CM.Name) as two on one.name = two.name """
+    sql = """SELECT PARK.Name, CNT_PARK, CNT_FULL
+             FROM (SELECT CM.Name, COUNT(CR.ID) AS CNT_PARK FROM Companies AS CM
+                       LEFT JOIN Cards AS CR ON CM.ID = CR.CompanyID AND ZoneID=1 GROUP BY CM.Name) AS PARK
+                   INNER JOIN
+                  (SELECT CM.Name, COUNT(CR.ID) AS CNT_FULL FROM Companies AS CM
+                       LEFT JOIN Cards AS CR ON CM.ID = CR.CompanyID GROUP BY CM.Name) AS TOTAL
+                   ON PARK.name = TOTAL.name """
+
     c.execute(sql)
     counter_data = [list(row) for row in c]
     c.close()

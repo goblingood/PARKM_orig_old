@@ -35,16 +35,16 @@ class Gcards(tk.Frame):
         self.lbx_cards.grid(row=0, column=0, rowspan=2)
 
         self.scrl_cards = tk.Scrollbar(self, orient=tk.VERTICAL, command=self.lbx_cards.yview)
-        self.scrl_cards.grid(row=0, column=1, rowspan=2, sticky=(tk.N, tk.S))
+        self.scrl_cards.grid(row=0, column=1, rowspan=2, sticky=('N', 'S'))
 
         self.cbx_curcompany = ttk.Combobox(self, width=35, values=['Непривязанные'] + sq.get_companies_list(), state='readonly')
         self.cbx_curcompany.set('Непривязанные')
         self.cbx_curcompany.bind('<<ComboboxSelected>>', self.fill_gcards_listbox)
-        self.cbx_curcompany.grid(row=0, column=2, sticky=tk.N)
+        self.cbx_curcompany.grid(row=0, column=2, sticky='N')
 
         self.cbx_newcompany = ttk.Combobox(self, width=35, values=['Непривязанные'] + sq.get_companies_list(), state='readonly')
         self.cbx_newcompany.set('Непривязанные')
-        self.cbx_newcompany.grid(row=1, column=2, sticky=tk.N)
+        self.cbx_newcompany.grid(row=1, column=2, sticky='N')
 
         self.btn_link = tk.Button(self, width=15, text='Привязать', command=self.register_gcards)
         self.btn_link.grid(row=2, column=2, padx=5, pady=5)
