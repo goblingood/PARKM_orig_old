@@ -34,7 +34,7 @@ class Dateentry(tk.Frame):
         self.E_1.focus()
         self.E_1.bind('<Return>', func=lambda e: self.E_2.focus_set())
         self.E_2.bind('<Return>', func=lambda e: self.E_3.focus_set())
-        self.E_3.bind('<Return>', func=self.getdate())
+        self.E_3.bind('<Return>', func=self.getdate)
         self.E_1.grid(row=0, column=0)
         self.L_1.grid(row=0, column=1)
         self.E_2.grid(row=0, column=2)
