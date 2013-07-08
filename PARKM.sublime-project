@@ -1,20 +1,32 @@
 {
-	"folders":
-	[
-		{
-			"path": "REPORTER",
-			"folder_exclude_patterns": ["__pycache__"]
+    "folders":
+    [
+        {
+            "path": "REPORTER",
+            "folder_exclude_patterns": ["__pycache__"]
 
-		},
-		{
-			"path": "GCARDS",
-			"folder_exclude_patterns": ["__pycache__"]
+        },
+        {
+            "path": "GCARDS",
+            "folder_exclude_patterns": ["__pycache__"]
 
-		},
-		{
-			"path": "ZCOUNTER",
-			"folder_exclude_patterns": ["__pycache__"]
+        },
+        {
+            "path": "ZCOUNTER",
+            "folder_exclude_patterns": ["__pycache__"]
 
-		}
-	]
+        }
+    ],
+
+    "build_systems":
+    [
+        {
+            "name": "PARKM",
+            "path": "c:/Python33/",
+            "cmd": ["python", "-u", "$file"],
+            "file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)",
+            "selector": "source.python"
+        }
+    ]
+
 }
