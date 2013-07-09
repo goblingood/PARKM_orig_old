@@ -17,6 +17,7 @@
 
 import tkinter as tk
 import tkinter.messagebox as messagebox
+import threading
 from tkinter import ttk
 from tkinter import filedialog
 import datetime
@@ -53,7 +54,7 @@ class Reporter(tk.Frame):
         self.de_dt_to = guiutils.Dateentry(self)
         self.de_dt_to.grid(row=1, column=3)
 
-        # ***self.working = False  # SEE BELOW
+        self.thr = None
 
     def select_dir(self):
         path = filedialog.askdirectory()
@@ -61,20 +62,23 @@ class Reporter(tk.Frame):
             self.lbl_path.configure(text=path + '/')
 
     def create_report(self):
-        # ***if not self.working:
-        # ***    self.working = True  # new dirty hack - NO! Bad idea!!! Not work!
         self.btn_report.config(state=tk.DISABLED)
         self.lbl_status.config(text='Wait...')
-        self.update()
         try:
-            reports.reports(self.cbx_companies.get(), self.lbl_path.cget('text'), self.cbx_companies.cget('values'), self.lbl_status,
-                            self.de_dt_from.getdate(), self.de_dt_to.getdate())
+            self.thr = threading.Thread(name='working', target=reports.reports, args=(self.cbx_companies.get(), self.lbl_path.cget('text'),
+                                        self.cbx_companies.cget('values'), self.lbl_status, self.de_dt_from.getdate(), self.de_dt_to.getdate()), daemon=True)
+            if threading.activeCount() == 1:
+                self.thr.start()
+                self.check_working()
         except (IOError, ValueError) as err:
             messagebox.showerror('ERROR', err)
-        self.update()  # some dirty hack
-        self.btn_report.config(state=tk.NORMAL)
-        self.lbl_status.config(text='Status...')
-        # ***self.working = False
+
+    def check_working(self):
+        if self.thr.is_alive():
+            self.after(500, self.check_working)
+        else:
+            self.btn_report.config(state=tk.NORMAL)
+            self.lbl_status.config(text='Status...')
 
 
 if __name__ == "__main__":
