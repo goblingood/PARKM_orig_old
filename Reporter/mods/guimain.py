@@ -16,7 +16,7 @@
 
 
 import tkinter as tk
-import tkinter.messagebox as messbox
+import tkinter.messagebox as messagebox
 from tkinter import ttk
 from tkinter import filedialog
 import datetime
@@ -70,7 +70,7 @@ class Reporter(tk.Frame):
             reports.reports(self.cbx_companies.get(), self.lbl_path.cget('text'), self.cbx_companies.cget('values'), self.lbl_status,
                             self.de_dt_from.getdate(), self.de_dt_to.getdate())
         except (IOError, ValueError) as err:
-            messbox.showerror('ERROR', err)
+            messagebox.showerror('ERROR', err)
         self.update()  # some dirty hack
         self.btn_report.config(state=tk.NORMAL)
         self.lbl_status.config(text='Status...')

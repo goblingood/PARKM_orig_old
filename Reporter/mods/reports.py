@@ -17,6 +17,7 @@
 
 import pyodbc
 import datetime
+import tkinter.messagebox as messagebox
 try:
     import mods.billalgs as ba
     import mods.savexlsx as sx
@@ -28,8 +29,8 @@ except:
 def get_companies_list():
     try:
         conn = pyodbc.connect('DRIVER={SQL Server};SERVER=localhost;DATABASE=parktime35;UID=sa;PWD=123')
-    except pyodbc.Error as e:
-        print(e)
+    except pyodbc.Error as err:
+        messagebox.showerror('ERROR', err)
         exit()
     c = conn.cursor()
     c.execute("""SELECT CM.Name FROM Companies AS CM ORDER BY CM.Name""")
