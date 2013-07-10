@@ -17,6 +17,7 @@
 
 import pyodbc
 import datetime
+import tkinter.messagebox as messagebox
 try:
     import mods.billalgs as ba
     import mods.savexlsx as sx
@@ -28,9 +29,9 @@ except:
 def get_companies_list():
     try:
         conn = pyodbc.connect('DRIVER={SQL Server};SERVER=localhost;DATABASE=parktime35;UID=sa;PWD=123')
-    except pyodbc.Error as e:
-        print(e)
-        exit()
+    except pyodbc.Error as err:
+        messagebox.showerror('ERROR', err)
+        exit(1)
     c = conn.cursor()
     c.execute("""SELECT CM.Name FROM Companies AS CM ORDER BY CM.Name""")
     companies_list = [row.Name for row in c]
@@ -38,15 +39,15 @@ def get_companies_list():
     return companies_list
 
 
-def reports(company, report_path, all_companies, status, rd_start, rd_end):
+def reports(company, report_path, all_companies, status, rd_start, rd_end, textinfo):
     if company != 'Все компании':
-        reports_company(company, report_path, rd_start, rd_end)
+        reports_company(company, report_path, rd_start, rd_end, textinfo)
     else:
         for company in all_companies[1:]:
-            reports_company(company, report_path, rd_start, rd_end)
+            reports_company(company, report_path, rd_start, rd_end, textinfo)
 
 
-def reports_company(company, report_path, rd_start, rd_end):
+def reports_company(company, report_path, rd_start, rd_end, textinfo):
     daily_tariffs = {'_Постоянные карты': [[datetime.time(0, 0, 0), datetime.time(0, 15, 0), 0],
                      [datetime.time(0, 15, 0), datetime.time(7, 0, 0), 250],
                      [datetime.time(7, 0, 0), datetime.time(23, 59, 59), 0]],
@@ -120,5 +121,7 @@ def reports_company(company, report_path, rd_start, rd_end):
         rep_data.append(['', '', '', '', '', '', '=SUM(G3:G3)', '=SUM(H3:H3)'])
     # DEBUG START
     print(rep_data)
+    textinfo.put('"' + company + '"' + ' (записей: ' + str(len(rep_data)-4) + ')' + '\n')
+    textinfo.join()
     # DEBUG END
     sx.save_company_xlsx(report_path + company, rep_data)

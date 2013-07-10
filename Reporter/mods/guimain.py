@@ -16,9 +16,12 @@
 
 
 import tkinter as tk
-import tkinter.messagebox as messbox
+import tkinter.messagebox as messagebox
+import tkinter.scrolledtext
 from tkinter import ttk
 from tkinter import filedialog
+import threading
+import queue
 import datetime
 try:
     import mods.reports as reports
@@ -31,6 +34,7 @@ except:
 class Reporter(tk.Frame):
     def __init__(self, master=None):
         tk.Frame.__init__(self, master)
+        self.master.protocol('WM_DELETE_WINDOW', self.on_close)
         self.pack()
         self.btn_report = tk.Button(self, width=15, text='Выгрузить в Excel', command=self.create_report)
         self.btn_report.grid(row=0, column=0, padx=5, pady=5)
@@ -52,8 +56,18 @@ class Reporter(tk.Frame):
         self.de_dt_from.grid(row=0, column=3)
         self.de_dt_to = guiutils.Dateentry(self)
         self.de_dt_to.grid(row=1, column=3)
+        self.info_window = tkinter.scrolledtext.ScrolledText(self, height=5, width=55, wrap='word', state='disabled')
+        self.info_window.grid(row=3, column=0, columnspan=4)
 
-        # ***self.working = False  # SEE BELOW
+        self.textinfo = queue.Queue()
+        self.thr = threading.Thread()
+        self.working = threading.Event()
+
+    def on_close(self):
+        if self.working.is_set():
+            self.after(1000, self.on_close)
+        else:
+            self.master.quit()
 
     def select_dir(self):
         path = filedialog.askdirectory()
@@ -61,26 +75,45 @@ class Reporter(tk.Frame):
             self.lbl_path.configure(text=path + '/')
 
     def create_report(self):
-        # ***if not self.working:
-        # ***    self.working = True  # new dirty hack - NO! Bad idea!!! Not work!
-        self.btn_report.config(state=tk.DISABLED)
+        self.btn_report.config(state='disabled')
         self.lbl_status.config(text='Wait...')
-        self.update()
+        self.working.set()
         try:
-            reports.reports(self.cbx_companies.get(), self.lbl_path.cget('text'), self.cbx_companies.cget('values'), self.lbl_status,
-                            self.de_dt_from.getdate(), self.de_dt_to.getdate())
+            self.thr = threading.Thread(target=reports.reports, args=(self.cbx_companies.get(), self.lbl_path.cget('text'), self.cbx_companies.cget('values'),
+                                        self.lbl_status, self.de_dt_from.getdate(), self.de_dt_to.getdate(), self.textinfo),
+                                        daemon=False)
+            self.thr.target = reports.reports
+            self.thr.args = (self.cbx_companies.get(), self.lbl_path.cget('text'),
+                             self.cbx_companies.cget('values'), self.lbl_status, self.de_dt_from.getdate(), self.de_dt_to.getdate())
+            self.thr.daemon = False
+            self.thr.start()
         except (IOError, ValueError) as err:
-            messbox.showerror('ERROR', err)
-        self.update()  # some dirty hack
-        self.btn_report.config(state=tk.NORMAL)
-        self.lbl_status.config(text='Status...')
-        # ***self.working = False
+            messagebox.showerror('ERROR', err)
+        finally:
+            self.check_working()
+
+    def check_working(self):
+        if self.thr.is_alive():
+            self.info_window.config(state='normal')
+            try:
+                self.info_window.insert('end', self.textinfo.get(block=False))
+            except queue.Empty:
+                pass
+            else:
+                self.info_window.see('end')
+                self.textinfo.task_done()
+            self.info_window.config(state='disabled')
+            self.after(100, self.check_working)
+        else:
+            self.btn_report.config(state=tk.NORMAL)
+            self.lbl_status.config(text='Status...')
+            self.working.clear()
 
 
 if __name__ == "__main__":
     app = Reporter()
     app.master.title('Отчёты')
-    app.master.geometry('480x100+300+200')  # WxH+X+Y
+    app.master.geometry('480x190+300+200')  # WxH+X+Y
     try:
         app.master.wm_iconbitmap('icon.ico')
     except tk.TclError:
