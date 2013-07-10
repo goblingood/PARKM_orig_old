@@ -27,5 +27,4 @@ try:
     app.master.wm_iconbitmap('mods\icon.ico')
 except tk.TclError:
     pass
-
 app.mainloop()

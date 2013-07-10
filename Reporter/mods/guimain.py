@@ -32,6 +32,7 @@ except:
 class Reporter(tk.Frame):
     def __init__(self, master=None):
         tk.Frame.__init__(self, master)
+        self.master.protocol('WM_DELETE_WINDOW', self.on_close)
         self.pack()
         self.btn_report = tk.Button(self, width=15, text='Выгрузить в Excel', command=self.create_report)
         self.btn_report.grid(row=0, column=0, padx=5, pady=5)
@@ -54,7 +55,14 @@ class Reporter(tk.Frame):
         self.de_dt_to = guiutils.Dateentry(self)
         self.de_dt_to.grid(row=1, column=3)
 
-        self.thr = None
+        self.thr = threading.Thread()
+        self.working = threading.Event()
+
+    def on_close(self):
+        if self.working.is_set():
+            self.after(1000, self.on_close)
+        else:
+            self.master.quit()
 
     def select_dir(self):
         path = filedialog.askdirectory()
@@ -64,21 +72,28 @@ class Reporter(tk.Frame):
     def create_report(self):
         self.btn_report.config(state=tk.DISABLED)
         self.lbl_status.config(text='Wait...')
+        self.working.set()
         try:
-            self.thr = threading.Thread(name='working', target=reports.reports, args=(self.cbx_companies.get(), self.lbl_path.cget('text'),
-                                        self.cbx_companies.cget('values'), self.lbl_status, self.de_dt_from.getdate(), self.de_dt_to.getdate()), daemon=True)
-            if threading.activeCount() == 1:
-                self.thr.start()
-                self.check_working()
+            self.thr = threading.Thread(target=reports.reports, args=(self.cbx_companies.get(), self.lbl_path.cget('text'),
+                                        self.cbx_companies.cget('values'), self.lbl_status, self.de_dt_from.getdate(), self.de_dt_to.getdate()),
+                                        daemon=False)
+            self.thr.target = reports.reports
+            self.thr.args = (self.cbx_companies.get(), self.lbl_path.cget('text'),
+                             self.cbx_companies.cget('values'), self.lbl_status, self.de_dt_from.getdate(), self.de_dt_to.getdate())
+            self.thr.daemon = False
+            self.thr.start()
         except (IOError, ValueError) as err:
             messagebox.showerror('ERROR', err)
+        finally:
+            self.check_working()
 
     def check_working(self):
         if self.thr.is_alive():
-            self.after(500, self.check_working)
+            self.after(1000, self.check_working)
         else:
             self.btn_report.config(state=tk.NORMAL)
             self.lbl_status.config(text='Status...')
+            self.working.clear()
 
 
 if __name__ == "__main__":
