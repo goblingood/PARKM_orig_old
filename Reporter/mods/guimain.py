@@ -64,6 +64,7 @@ class Reporter(tk.Frame):
         self.textinfo = queue.Queue()
         self.exceptioninfo = queue.Queue()
         self.working = threading.Event()
+        self.thr = None
 
     def on_close(self):
         if self.working.is_set():
@@ -92,8 +93,7 @@ class Reporter(tk.Frame):
             self.check_working()
 
     def check_working(self):
-        if self.thr.is_alive():
-
+        if self.thr is not None and self.thr.is_alive():
             self.info_window.config(state='normal')
             try:
                 self.info_window.insert('end', self.textinfo.get(block=False))
