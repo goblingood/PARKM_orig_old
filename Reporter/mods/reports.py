@@ -1,4 +1,4 @@
-# REPORTER connects guest cards to companies
+# REPORTER create reports
 # Copyright (C) 2013  AB
 
 # This program is free software: you can redistribute it and/or modify

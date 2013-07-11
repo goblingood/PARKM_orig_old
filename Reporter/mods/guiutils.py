@@ -1,4 +1,4 @@
-# REPORTER connects guest cards to companies
+# REPORTER create reports
 # Copyright (C) 2013  AB
 
 # This program is free software: you can redistribute it and/or modify
@@ -41,7 +41,7 @@ class Dateentry(tk.Frame):
         self.L_2.grid(row=0, column=3)
         self.E_3.grid(row=0, column=4)
 
-    def getdate(self):
+    def getdate(self, event=None):
         date = datetime.date(day=int(self.E_1.get()), month=int(self.E_2.get()), year=int(self.E_3.get())).strftime("%Y-%m-%d")
         return date
 

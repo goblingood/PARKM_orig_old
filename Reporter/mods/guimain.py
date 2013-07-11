@@ -1,4 +1,4 @@
-# REPORTER connects guest cards to companies
+# REPORTER create reports
 # Copyright (C) 2013  AB
 
 # This program is free software: you can redistribute it and/or modify
@@ -26,9 +26,11 @@ import datetime
 try:
     import mods.reports as reports
     import mods.guiutils as guiutils
+    import mods.exthreading as exthreading
 except:
     import reports as reports
     import guiutils as guiutils
+    import exthreading as exthreading
 
 
 class Reporter(tk.Frame):
@@ -60,7 +62,7 @@ class Reporter(tk.Frame):
         self.info_window.grid(row=3, column=0, columnspan=4)
 
         self.textinfo = queue.Queue()
-        self.thr = threading.Thread()
+        self.exceptioninfo = queue.Queue()
         self.working = threading.Event()
 
     def on_close(self):
@@ -79,21 +81,19 @@ class Reporter(tk.Frame):
         self.lbl_status.config(text='Wait...')
         self.working.set()
         try:
-            self.thr = threading.Thread(target=reports.reports, args=(self.cbx_companies.get(), self.lbl_path.cget('text'), self.cbx_companies.cget('values'),
-                                        self.lbl_status, self.de_dt_from.getdate(), self.de_dt_to.getdate(), self.textinfo),
-                                        daemon=False)
-            self.thr.target = reports.reports
-            self.thr.args = (self.cbx_companies.get(), self.lbl_path.cget('text'),
-                             self.cbx_companies.cget('values'), self.lbl_status, self.de_dt_from.getdate(), self.de_dt_to.getdate())
-            self.thr.daemon = False
+            self.thr = exthreading.Exthread(target=reports.reports,
+                                            args=(self.cbx_companies.get(), self.lbl_path.cget('text'), self.cbx_companies.cget('values'),
+                                            self.lbl_status, self.de_dt_from.getdate(), self.de_dt_to.getdate(), self.textinfo),
+                                            daemon=False, exceptioninfo=self.exceptioninfo)
             self.thr.start()
-        except (IOError, ValueError) as err:
+        except ValueError as err:
             messagebox.showerror('ERROR', err)
         finally:
             self.check_working()
 
     def check_working(self):
         if self.thr.is_alive():
+
             self.info_window.config(state='normal')
             try:
                 self.info_window.insert('end', self.textinfo.get(block=False))
@@ -103,6 +103,14 @@ class Reporter(tk.Frame):
                 self.info_window.see('end')
                 self.textinfo.task_done()
             self.info_window.config(state='disabled')
+
+            try:
+                messagebox.showerror('ERROR', self.exceptioninfo.get(block=False))
+            except queue.Empty:
+                pass
+            else:
+                self.exceptioninfo.task_done()
+
             self.after(100, self.check_working)
         else:
             self.btn_report.config(state=tk.NORMAL)

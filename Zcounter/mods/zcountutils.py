@@ -1,4 +1,4 @@
-# ZCOUNTER connects guest cards to companies
+# ZCOUNTER counts busy/total
 # Copyright (C) 2013  AB
 
 # This program is free software: you can redistribute it and/or modify

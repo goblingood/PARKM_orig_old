@@ -15,16 +15,18 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-import tkinter as tk
-import mods.guimain as guimain
+import threading
+import sys
 
 
-app = guimain.Reporter()
-app.master.title('Отчёты')
-app.master.geometry('480x190+300+200')  # WxH+X+Y
-app.master.resizable(False, False)
-try:
-    app.master.wm_iconbitmap('mods\icon.ico')
-except tk.TclError:
-    pass
-app.mainloop()
+class Exthread(threading.Thread):
+    def __init__(self, target=None, args=(), daemon=None, exceptioninfo=None):
+        self.exceptioninfo = exceptioninfo
+        threading.Thread.__init__(self, target=target, args=args, daemon=daemon)
+
+    def run(self):
+        try:
+            threading.Thread.run(self)
+        except:
+            self.exceptioninfo.put(sys.exc_info()[1])
+            self.exceptioninfo.join()
