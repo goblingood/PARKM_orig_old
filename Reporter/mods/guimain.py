@@ -94,6 +94,7 @@ class Reporter(tk.Frame):
 
     def check_working(self):
         if self.thr is not None and self.thr.is_alive():
+
             self.info_window.config(state='normal')
             try:
                 self.info_window.insert('end', self.textinfo.get(block=False))
