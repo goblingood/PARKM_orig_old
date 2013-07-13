@@ -29,9 +29,26 @@ def query_count():
                    INNER JOIN
                   (SELECT CM.Name, COUNT(CR.ID) AS CNT_FULL FROM Companies AS CM
                        LEFT JOIN Cards AS CR ON CM.ID = CR.CompanyID GROUP BY CM.Name) AS TOTAL
-                   ON PARK.name = TOTAL.name """
+                   ON PARK.name = TOTAL.name"""
 
     c.execute(sql)
     counter_data = [list(row) for row in c]
     c.close()
     return counter_data
+
+
+def query_company_inpark(company):
+    conn = pyodbc.connect('DRIVER={SQL Server};SERVER=localhost;DATABASE=parktime35;UID=sa;PWD=123')
+    c = conn.cursor()
+    sql = """SELECT UPPER(SUBSTRING(MASTER.DBO.FN_VARBINTOHEXSTR(CR.ID), 3, 8)) , CS.Name, CR.TimeEntry
+             FROM Companies AS CM JOIN (
+                                        CARDS AS CR
+                                        LEFT JOIN Customers AS CS ON CR.CustomerID = CS.ID
+                                       ) ON CM.ID = CR.CompanyID and ZoneID=1
+             WHERE CM.Name = ?
+             ORDER BY CR.TimeEntry ASC"""
+
+    c.execute(sql, company)
+    inpark_data = [list(row) for row in c]
+    c.close()
+    return inpark_data

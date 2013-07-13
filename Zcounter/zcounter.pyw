@@ -43,16 +43,35 @@ class Zcounter(tk.Frame):
         self.tv_counter.heading("company", text="Company")
         self.tv_counter.heading("current", text="Current")
         self.tv_counter.heading("total", text="Total")
+        self.tv_counter.bind("<<TreeviewSelect>>", self.show_inpark)
 
         self.tv_counter['show'] = 'headings'  # supress!
         self.prev_data = []
+
+        self.tv_inpark = ttk.Treeview(self, height=28)
+        self.tv_inpark.grid(row=0, column=2)
+
+        self.scrl_inpark = tk.Scrollbar(self, orient=tk.VERTICAL, command=self.tv_inpark.yview)
+        self.scrl_inpark.grid(row=0, column=3, sticky=('N', 'S'))
+        self.tv_inpark['yscrollcommand'] = self.scrl_inpark.set
+
+        self.tv_inpark["columns"] = ("card_id", "customer", 'time_entry')
+        self.tv_inpark.column("card_id", width=60, anchor='w')
+        self.tv_inpark.column("customer", width=300, anchor='w')
+        self.tv_inpark.column("time_entry", width=110, anchor='center')
+        self.tv_inpark.heading("card_id", text="Card ID")
+        self.tv_inpark.heading("customer", text="Customer")
+        self.tv_inpark.heading("time_entry", text="Time entry")
+
+        self.tv_inpark['show'] = 'headings'  # supress!
+
         self.init_tv_counter()
         self.refresh_tv_counter()
 
     def init_tv_counter(self):
         counter_data = zu.query_count()
         for i, data in enumerate(counter_data):
-            counter_data = zu.query_count()
+            # counter_data = zu.query_count()  # ?????? MAYBE ERROR, MISPRINT
             self.tv_counter.insert('', 'end', iid=i+1, values=data)
         self.prev_data = counter_data
 
@@ -68,14 +87,22 @@ class Zcounter(tk.Frame):
                 self.tv_counter.tag_configure('down', background='green')
             else:
                 self.tv_counter.insert('', 'end', iid=i+1, values=data)
-        # self.prev_data = counter_data
+        self.prev_data = counter_data  # ####
         self.tv_counter.after(30000, self.refresh_tv_counter)
+
+    def show_inpark(self, event=None):
+        item_no = self.tv_counter.selection()[0]
+        company_name = self.tv_counter.item(item_no)['values'][0]
+        inpark_data = zu.query_company_inpark(company_name)
+        [self.tv_inpark.delete(i) for i in self.tv_inpark.get_children()]
+        for i, data in enumerate(inpark_data):
+            self.tv_inpark.insert('', 'end', iid=i+1, values=data)
 
 
 if __name__ == "__main__":
     app = Zcounter()
     app.master.title('Парковка')
-    app.master.geometry('380x600+300+200')  # WxH+X+Y
+    app.master.geometry('870x600+300+200')  # WxH+X+Y
     try:
         app.master.wm_iconbitmap('mods\icon.ico')
     except tk.TclError:
