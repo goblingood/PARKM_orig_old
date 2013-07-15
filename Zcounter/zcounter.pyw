@@ -64,21 +64,24 @@ class Zcounter(tk.Frame):
         self.tv_inpark.heading("time_entry", text="Time entry")
 
         self.tv_inpark['show'] = 'headings'  # supress!
+        self.tv_counter_sel = None
+        self.prev_data = zu.query_count()
 
-        self.init_tv_counter()
         self.refresh_tv_counter()
 
-    def init_tv_counter(self):
-        counter_data = zu.query_count()
-        for i, data in enumerate(counter_data):
-            # counter_data = zu.query_count()  # ?????? MAYBE ERROR, MISPRINT
-            self.tv_counter.insert('', 'end', iid=i+1, values=data)
-        self.prev_data = counter_data
+    # def init_tv_counter(self):
+    #     counter_data = zu.query_count()
+    #     for i, data in enumerate(counter_data):
+    #         # counter_data = zu.query_count()  # ?????? MAYBE ERROR, MISPRINT
+    #         self.tv_counter.insert('', 'end', iid=i+1, values=data)
+    #     self.prev_data = counter_data
+    #     self.refresh_tv_counter()
 
     def refresh_tv_counter(self):
         counter_data = zu.query_count()
+        self.tv_counter.delete(*self.tv_counter.get_children())
         for i, data in enumerate(counter_data):
-            self.tv_counter.delete(i+1)
+            # self.tv_counter.delete(i+1)
             if data[1] > self.prev_data[i][1]:
                 self.tv_counter.insert('', 'end', iid=i+1, values=data, tag=('up',))
                 self.tv_counter.tag_configure('up', background='red')
@@ -87,14 +90,20 @@ class Zcounter(tk.Frame):
                 self.tv_counter.tag_configure('down', background='green')
             else:
                 self.tv_counter.insert('', 'end', iid=i+1, values=data)
+        try:
+            self.tv_counter.selection_set(self.tv_counter_sel)
+        except tk.TclError:
+            pass
         self.prev_data = counter_data  # ####
         self.tv_counter.after(30000, self.refresh_tv_counter)
 
     def show_inpark(self, event=None):
-        item_no = self.tv_counter.selection()[0]
+        # self.tv_counter_sel = self.tv_counter.focus()  # or below
+        item_no = self.tv_counter.selection()[0]  # or above
+        self.tv_counter_sel = item_no  # can be improve
         company_name = self.tv_counter.item(item_no)['values'][0]
         inpark_data = zu.query_company_inpark(company_name)
-        [self.tv_inpark.delete(i) for i in self.tv_inpark.get_children()]
+        self.tv_inpark.delete(*self.tv_inpark.get_children())
         for i, data in enumerate(inpark_data):
             self.tv_inpark.insert('', 'end', iid=i+1, values=data)
 
