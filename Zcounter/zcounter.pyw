@@ -69,19 +69,10 @@ class Zcounter(tk.Frame):
 
         self.refresh_tv_counter()
 
-    # def init_tv_counter(self):
-    #     counter_data = zu.query_count()
-    #     for i, data in enumerate(counter_data):
-    #         # counter_data = zu.query_count()  # ?????? MAYBE ERROR, MISPRINT
-    #         self.tv_counter.insert('', 'end', iid=i+1, values=data)
-    #     self.prev_data = counter_data
-    #     self.refresh_tv_counter()
-
     def refresh_tv_counter(self):
         counter_data = zu.query_count()
         self.tv_counter.delete(*self.tv_counter.get_children())
         for i, data in enumerate(counter_data):
-            # self.tv_counter.delete(i+1)
             if data[1] > self.prev_data[i][1]:
                 self.tv_counter.insert('', 'end', iid=i+1, values=data, tag=('up',))
                 self.tv_counter.tag_configure('up', background='red')
