@@ -46,9 +46,9 @@ class Reporter(tk.Frame):
         self.cbx_companies.set('Все компании')
         self.cbx_companies.grid(row=0, column=1)
         self.lbl_path = tk.Label(self, text='C:/Reports/')
-        self.lbl_path.grid(row=1, column=1, sticky='W')
+        self.lbl_path.grid(row=1, column=1, sticky=tk.W)
         self.lbl_status = tk.Label(self, text='Status...')
-        self.lbl_status.grid(row=2, column=0, padx=5, columnspan=2, sticky='W')
+        self.lbl_status.grid(row=2, column=0, padx=5, columnspan=2, sticky=tk.W)
         self.lbl_dt_from = tk.Label(self, text='С: ')
         self.lbl_dt_from.grid(row=0, column=2)
         self.lbl_dt_to = tk.Label(self, text='По:')
@@ -58,7 +58,7 @@ class Reporter(tk.Frame):
         self.de_dt_from.grid(row=0, column=3)
         self.de_dt_to = guiutils.Dateentry(self)
         self.de_dt_to.grid(row=1, column=3)
-        self.info_window = tkinter.scrolledtext.ScrolledText(self, height=5, width=55, wrap='word', state='disabled')
+        self.info_window = tk.scrolledtext.ScrolledText(self, height=5, width=55, wrap=tk.WORD, state=tk.DISABLED)
         self.info_window.grid(row=3, column=0, columnspan=4)
 
         self.textinfo = queue.Queue()
@@ -75,11 +75,11 @@ class Reporter(tk.Frame):
     def select_dir(self):
         path = filedialog.askdirectory()
         if path != '':
-            self.lbl_path.configure(text=path + '/')
+            self.lbl_path['text'] = path + '/'
 
     def create_report(self):
-        self.btn_report.config(state='disabled')
-        self.lbl_status.config(text='Wait...')
+        self.btn_report['state'] = tk.DISABLED
+        self.lbl_status['text'] = 'Wait...'
         self.working.set()
         try:
             self.thr = exthreading.Exthread(target=reports.reports,
@@ -95,15 +95,15 @@ class Reporter(tk.Frame):
     def check_working(self):
         if self.thr is not None and self.thr.is_alive():
 
-            self.info_window.config(state='normal')
+            self.info_window['state'] = tk.NORMAL
             try:
                 self.info_window.insert('end', self.textinfo.get(block=False))
             except queue.Empty:
                 pass
             else:
-                self.info_window.see('end')
+                self.info_window.see(tk.END)
                 self.textinfo.task_done()
-            self.info_window.config(state='disabled')
+            self.info_window['state'] = tk.DISABLED
 
             try:
                 messagebox.showerror('ERROR', self.exceptioninfo.get(block=False))
@@ -114,8 +114,8 @@ class Reporter(tk.Frame):
 
             self.after(100, self.check_working)
         else:
-            self.btn_report.config(state=tk.NORMAL)
-            self.lbl_status.config(text='Status...')
+            self.btn_report['state'] = tk.NORMAL
+            self.lbl_status['text'] = 'Status...'
             self.working.clear()
 
 

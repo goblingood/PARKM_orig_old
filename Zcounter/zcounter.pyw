@@ -33,13 +33,13 @@ class Zcounter(tk.Frame):
         self.tv_counter.grid(row=0, column=0)
 
         self.scrl_counter = tk.Scrollbar(self, orient=tk.VERTICAL, command=self.tv_counter.yview)
-        self.scrl_counter.grid(row=0, column=1, sticky=('N', 'S'))
+        self.scrl_counter.grid(row=0, column=1, sticky=(tk.N, tk.S))
         self.tv_counter['yscrollcommand'] = self.scrl_counter.set
 
         self.tv_counter["columns"] = ("company", "current", 'total')
-        self.tv_counter.column("company", anchor='w')
-        self.tv_counter.column("current", width=60, anchor='center')
-        self.tv_counter.column("total", width=60, anchor='center')
+        self.tv_counter.column("company", anchor=tk.W)
+        self.tv_counter.column("current", width=60, anchor=tk.CENTER)
+        self.tv_counter.column("total", width=60, anchor=tk.CENTER)
         self.tv_counter.heading("company", text="Company")
         self.tv_counter.heading("current", text="Current")
         self.tv_counter.heading("total", text="Total")
@@ -52,13 +52,13 @@ class Zcounter(tk.Frame):
         self.tv_inpark.grid(row=0, column=2)
 
         self.scrl_inpark = tk.Scrollbar(self, orient=tk.VERTICAL, command=self.tv_inpark.yview)
-        self.scrl_inpark.grid(row=0, column=3, sticky=('N', 'S'))
+        self.scrl_inpark.grid(row=0, column=3, sticky=(tk.N, tk.S))
         self.tv_inpark['yscrollcommand'] = self.scrl_inpark.set
 
         self.tv_inpark["columns"] = ("card_id", "customer", 'time_entry')
-        self.tv_inpark.column("card_id", width=60, anchor='w')
-        self.tv_inpark.column("customer", width=300, anchor='w')
-        self.tv_inpark.column("time_entry", width=110, anchor='center')
+        self.tv_inpark.column("card_id", width=60, anchor=tk.W)
+        self.tv_inpark.column("customer", width=300, anchor=tk.W)
+        self.tv_inpark.column("time_entry", width=110, anchor=tk.CENTER)
         self.tv_inpark.heading("card_id", text="Card ID")
         self.tv_inpark.heading("customer", text="Customer")
         self.tv_inpark.heading("time_entry", text="Time entry")
@@ -75,10 +75,10 @@ class Zcounter(tk.Frame):
         for i, data in enumerate(counter_data):
             if data[1] > self.prev_data[i][1]:
                 self.tv_counter.insert('', 'end', iid=i+1, values=data, tag=('up',))
-                self.tv_counter.tag_configure('up', background='red')
+                self.tv_counter.tag_config('up', background=tk.RED)
             elif data[1] < self.prev_data[i][1]:
                 self.tv_counter.insert('', 'end', iid=i+1, values=data, tag=('down',))
-                self.tv_counter.tag_configure('down', background='green')
+                self.tv_counter.tag_config('down', background=tk.GREEN)
             else:
                 self.tv_counter.insert('', 'end', iid=i+1, values=data)
         try:

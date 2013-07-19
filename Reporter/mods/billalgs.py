@@ -22,8 +22,8 @@ import datetime
 
 def gen_date_list(base, numdays):
     base = datetime.datetime.date(base)
-    dateList = [base + datetime.timedelta(days=i) for i in range(numdays)]
-    return dateList
+    date_list = [base + datetime.timedelta(days=i) for i in range(numdays)]
+    return date_list
 
 
 def bill_daily_list(park_start, park_end, daily_tariff):
