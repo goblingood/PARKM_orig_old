@@ -85,6 +85,8 @@ class Zcounter(tk.Frame):
             self.tv_counter.selection_set(self.tv_counter_sel)
         except tk.TclError:
             pass
+        else:
+            self.tv_counter.focus(self.tv_counter_sel)  # keep control up/down arrow button scroll after refresh
         self.prev_data = counter_data  # ####
         self.tv_counter.after(30000, self.refresh_tv_counter)
 
