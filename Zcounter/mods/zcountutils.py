@@ -30,7 +30,7 @@ def query_count():
                   (SELECT CM.Name, COUNT(CR.ID) AS CNT_FULL FROM Companies AS CM
                        LEFT JOIN Cards AS CR ON CM.ID = CR.CompanyID GROUP BY CM.Name) AS TOTAL
                    ON PARK.name = TOTAL.name
-                   ORDER BY PARK.Name"""
+             ORDER BY PARK.Name"""
 
     c.execute(sql)
     counter_data = [list(row) for row in c]
