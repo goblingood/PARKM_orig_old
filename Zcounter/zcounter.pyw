@@ -75,10 +75,10 @@ class Zcounter(tk.Frame):
         for i, data in enumerate(counter_data):
             if data[1] > self.prev_data[i][1]:
                 self.tv_counter.insert('', 'end', iid=i+1, values=data, tag=('up',))
-                self.tv_counter.tag_config('up', background=tk.RED)
+                self.tv_counter.tag_config('up', background='red')
             elif data[1] < self.prev_data[i][1]:
                 self.tv_counter.insert('', 'end', iid=i+1, values=data, tag=('down',))
-                self.tv_counter.tag_config('down', background=tk.GREEN)
+                self.tv_counter.tag_config('down', background='green')
             else:
                 self.tv_counter.insert('', 'end', iid=i+1, values=data)
         try:
