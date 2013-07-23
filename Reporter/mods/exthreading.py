@@ -20,9 +20,9 @@ import sys
 
 
 class Exthread(threading.Thread):
-    def __init__(self, target=None, args=(), daemon=None, exceptioninfo=None):
+    def __init__(self, exceptioninfo, *args, **kwargs):
         self.exceptioninfo = exceptioninfo
-        threading.Thread.__init__(self, target=target, args=args, daemon=daemon)
+        threading.Thread.__init__(self, *args, **kwargs)
 
     def run(self):
         try:
