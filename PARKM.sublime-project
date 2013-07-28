@@ -2,17 +2,20 @@
     "folders":
     [
         {
-            "path": "REPORTER",
+            "name": "REPORTER",
+            "path": "Reporter",
             "folder_exclude_patterns": ["__pycache__"]
 
         },
         {
-            "path": "GCARDS",
+            "name": "GCARDS",
+            "path": "Gcards",
             "folder_exclude_patterns": ["__pycache__"]
 
         },
         {
-            "path": "ZCOUNTER",
+            "name": "ZCOUNTER",
+            "path": "Zcounter",
             "folder_exclude_patterns": ["__pycache__"]
 
         }
